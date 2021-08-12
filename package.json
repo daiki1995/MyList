@@ -1,0 +1,40 @@
+{
+  "name": "mylist",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --config webpack.config.js",
+    "start": "node ./serv/bin/www"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/daiki1995/MyList.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/daiki1995/MyList/issues"
+  },
+  "homepage": "https://github.com/daiki1995/MyList#readme",
+  "dependencies": {
+    "@babel/core": "^7.14.0",
+    "@babel/preset-env": "^7.14.1",
+    "@babel/preset-react": "^7.13.13",
+    "babel-loader": "^8.2.2",
+    "css-loader": "^6.2.0",
+    "express": "^4.17.1",
+    "Express": "^3.0.1",
+    "normalize": "^0.3.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-modal": "^3.14.3",
+    "skeleton": "^0.1.2",
+    "style-loader": "^3.2.1",
+    "webpack": "^5.36.2"
+  },
+  "devDependencies": {
+    "webpack-cli": "^4.7.2"
+  }
+}
