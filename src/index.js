@@ -9,5 +9,5 @@ import './css/skeleton.css'
 
 
 
-console.log("Test");
+
 window.onload=()=>ReactDOM.render(<App />,document.getElementById('app'));

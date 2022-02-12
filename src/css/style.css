@@ -26,3 +26,18 @@
     min-height: 100px; 
     overflow-wrap: break-word;
 }
+
+.login{
+    flex-direction: row;
+    border: solid 3px #000000;
+}
+
+.loginCont{
+    display: flex;
+    flex-direction: column;
+    flex-basis:50%;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+    height: 500px;
+}

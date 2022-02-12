@@ -3,14 +3,14 @@ module.exports = {
     mode: "development",
 
     // メインとなるJavaScriptファイル（エントリーポイント）
-    entry: `./src/index.js`,
+    entry: `./src/login/creatAccount.js`,
   
     // ファイルの出力設定
     output: {
       //  出力ファイルのディレクトリ名
       path: `${__dirname}/serv/public/javascripts`,
       // 出力ファイル名
-      filename: "index.js"
+      filename: "creatAccount.js"
     },
 
     
@@ -26,8 +26,7 @@ module.exports = {
                         presets: [
                             '@babel/preset-env',
                             '@babel/preset-react'
-                        ],
-                        plugins: ['@babel/plugin-transform-runtime']
+                        ]
                     }
                 }
             },
