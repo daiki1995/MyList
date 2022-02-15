@@ -50,11 +50,11 @@ router.get('/Login',function(req,res,next){
 router.post('/Login/api',function(req,res,next){
   //ログインデータを受けとってDBとの整合性が取れているかを確認
   if (loginCheck){
-
+    
   }else{
-    console.log("false");
-    console.log(res.body);
-  }
+    console.log();
+    console.log(req.body);
+  };
  });
  
 //ログインチェック
