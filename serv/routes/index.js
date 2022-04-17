@@ -3,8 +3,6 @@ var express = require('express');
 
 var router = express.Router();
 
-var loginCheck=false;
-
 router.use(express.json());
 
 
@@ -49,17 +47,17 @@ router.get('/Login',function(req,res,next){
 //ログインデータの送信
 router.post('/Login/api',function(req,res,next){
   //ログインデータを受けとってDBとの整合性が取れているかを確認
-  if (loginCheck){
-    
-  }else{
-    console.log();
+  
+    console.log("login");
     console.log(req.body);
-  };
  });
  
 //ログインチェック
 router.get('/Login/api',function(){
   //読み込んだ結果を返す
+  console.log("api login");
+  
+
 });
 
 

@@ -42,20 +42,8 @@ function Login(){
 
         function loginClick(){
             setctrFetch(1);
-            console.log("Click")
+            console.log("Click");
         }
-
-        useEffect(()=>{
-
-            if(ctrlFetch==1){
-
-                postData(ckLogin,{pa:pass,id:loginId})
-                .then(data => {
-                    console.log(JSON.stringify(data))
-                }).catch(error => console.error(error))
-            } 
-            setctrFetch(0);
-        });
 
         function changeId(e){
             setloginId(e.target.value);
@@ -65,6 +53,23 @@ function Login(){
             setPass(e.target.value);
         }
 
+
+        useEffect(()=>{
+
+            if(ctrlFetch==1){
+
+                postData(ckLogin,{pa:pass,id:loginId})
+                .then(data => {
+                    console.log(JSON.stringify(data))
+                }).catch(error => console.error(error))
+
+                fetch(ckLogin).then(response=>response.json).then(data=>console.log(data));
+
+            } 
+            setctrFetch(0);
+        });
+
+        
         return(
             <div className="login">
                 <div><input placeholder="UserName" onChange={(e)=>changeId(e)}></input></div>
