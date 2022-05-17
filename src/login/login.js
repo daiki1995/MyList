@@ -57,14 +57,14 @@ function Login(){
         useEffect(()=>{
 
             if(ctrlFetch==1){
-
+                //POST送信
                 postData(ckLogin,{pa:pass,id:loginId})
                 .then(data => {
                     console.log(JSON.stringify(data))
                 }).catch(error => console.error(error))
 
+                //GET送信
                 fetch(ckLogin).then(response=>response.json).then(data=>console.log(data));
-
             } 
             setctrFetch(0);
         });

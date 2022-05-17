@@ -10,7 +10,7 @@ import '../css/skeleton.css';
 
 
 const server = "http://localhost:3000/login/Creat"
-const serverApi="http://localhost:3000/login/Creat/api"
+const serverCreat=server + "/api"
 
 
 function CreatAccount(){
@@ -50,7 +50,7 @@ function CreatAccount(){
 
             if(ctrlFetch==1){
 
-                postData(serverApi,{id:loginId,pa:pass,email:eMail})
+                postData(serverCreat,{id:loginId,pa:pass,email:eMail})
                 .then(data => {
                     console.log(JSON.stringify(data))
                 }).catch(error => console.error(error))
