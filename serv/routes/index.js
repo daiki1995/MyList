@@ -3,8 +3,9 @@ var express = require('express');
 
 var router = express.Router();
 
-var loginD;
-
+let loginID;
+let loginPass;
+let loginName;
 
 router.use(express.json());
 
@@ -34,6 +35,7 @@ conection.connect((err)=>{
 
 router.get('/', function(req, res, next) {
   res.sendfile(process.cwd()+'/serv/views/index.html');
+  console.log("結果" + loginName);
 });
 
 
@@ -45,34 +47,32 @@ router.get('/Login',function(req,res,next){
 router.post('/Login/api',function(req,res,next){
   //ログインデータを受けとってDBとの整合性が取れているかを確認
 
-  console.log("api post");
-  console.log(req.body);
-
-  const qLogin = 'SELECT user_id,user_name,user_email,user_pas FROM user';
-
-  conection.connect((err)=>{
-    conection.query(qLogin,function(err, results, fields){
-      if (err) throw err;
-      console.log(results);
-
-      for(let i=0;i<results.length;i++){
-        
-        if(results[i].user_name==req.body.id && results[i].user_pas==req.body.pa){
-          console.log("ID MATCH")
-        }
-
-      }
-      conection.end();
-    });
-  });
+  loginID=req.body.id;
+  loginPass=req.body.pa
   
  });
  
+
 //ログインチェック
-router.get('/Login/api',function(){
+router.get('/Login/api',function(req,res,next){
   //読み込んだ結果を返す
-  console.log("api get");
   
+  const qLogin = 'SELECT user_name,user_pas FROM user WHERE user_name=? AND user_pas=?'
+ 
+  conection.connect((err)=>{
+    conection.query(qLogin,[loginID,loginPass],function(err, results, fields){
+      if (err) throw err;
+      
+      if (results[0]==undefined){
+        console.log("存在しません");
+      }else{
+        loginName=results[0].user_name;
+        //console.log(loginName);
+        res.send({"ck":true});
+      }
+      
+    });
+  });
 });
 
 //アカウント作成　ゲット

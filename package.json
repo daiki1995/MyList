@@ -8,7 +8,7 @@
     "build": "npm-run-all webpack:*",
     "webpack:index": "webpack --config webpack.config.js",
     "webpack:login": "webpack --config webpack.config.login.js",
-    "webpack:creatAccount":"webpack --config webpack.config.creatAccount.js",
+    "webpack:creatAccount": "webpack --config webpack.config.creatAccount.js",
     "start": "node ./serv/bin/www"
   },
   "repository": {

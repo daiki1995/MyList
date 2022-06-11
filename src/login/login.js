@@ -25,7 +25,6 @@ function Login(){
             body:JSON.stringify(data),
         }
         
-        //console.log(fetch)
         console.log(data);
     
         return fetch(url,req).then(response => response.json());
@@ -38,6 +37,7 @@ function Login(){
         const [ctrlFetch,setctrFetch]=useState(0);
         const [loginId,setloginId]=useState();
         const [pass,setPass]=useState();
+        const [loginCK,setLoginCK]=useState();
 
 
         function loginClick(){
@@ -64,7 +64,16 @@ function Login(){
                 }).catch(error => console.error(error))
 
                 //GET送信
-                fetch(ckLogin).then(response=>response.json).then(data=>console.log(data));
+                fetch(ckLogin).then(response=>response.json())
+                .then(function(loginC){
+                   
+                    if(loginC.ck==true){
+                        window.location.href = '/';
+                    }
+                });
+                
+               
+                //window.location.href = '/';
             } 
             setctrFetch(0);
         });
