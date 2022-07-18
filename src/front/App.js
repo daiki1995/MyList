@@ -1,93 +1,57 @@
 import React,{useState,useEffect}  from 'react';
-import Modal from 'react-modal';
 
 import '../css/style.css';
 import '../css/normalize.css';
 import '../css/skeleton.css';
 
-Modal.setAppElement('#app');
 
-const modalStyles = {
-    content : {
-      top                   : '40%',
-      left                  : '50%',
-      right                 : 'auto',
-      bottom                : 'auto',
-      marginRight           : '-50%',
-      transform             : 'translate(-50%, -50%)',
-    },
-    overlay: {
-        background: 'rgba(0, 0, 0, 0.2)'
-      }
-  };
+const detailServ='http://'+location.host
 
 function App(){
 
-    const[cont,setCont]=useState();
-    
     return(
         <div>
             <Headers/>
-            <Submission/>
-            <TimeLine/>
+            <Mid/>
         </div> 
     )
 
     function Headers(){
         return(
             <div className="header-d">
-                <h2>MyList</h2>
+                <h2>とうこん！ マウントふぁいと倶楽部</h2>
             </div>
         )
     }
 
-    function Submission(){
-
-        const[modalOpen,setOpen]=useState(false);
-        const[str,setStr]=useState("");
-        
-        
-        function subBut(){
-            setCont(
-                <div className="cont">{str}</div>
-                )//ここが投稿結果になる。
-            setOpen(false);
-        }
+    function Mid(){
 
         return(
-            <div　className="submission">
-                <button onClick={()=>setOpen(true)}>
-                    投稿
-                </button>
+            <div className="mid-wrapper">
+                <div className="mid-container">
+                    <MoveP name='しょうさい' url='/detail'></MoveP>
+                    <MoveP name='バトる！' url='/battle'></MoveP>
+                    <MoveP name='ひょうか' url='/judgement'></MoveP>
+                    
+                </div>  
+            </div>
+        )
 
-                <Modal isOpen={modalOpen}
-                    onRequestClose={()=>setOpen(false)}
-                    style={modalStyles}
-                >
-                    <div className="submission">
-                        <textarea className="subInput"　
-                            rows="6" cols="40" 
-                            onChange={(e)=>setStr(e.target.value)}>
-                        </textarea>
-
-                        <button onClick={()=>subBut()}>投稿</button> 
-                    </div>
+        function MoveP(props){
+            console.log(props.url);
             
-                </Modal>
-            </div>
-        )
-    }
+            function roadURL(url){
+                console.log(detailServ+url);
+                window.location.href = detailServ+url;
+            }
 
-    
-    function TimeLine(){
-
-        
-        return(
-            <div>
-                {cont}
-            </div>
-        )
-    }
+            return(
+                <div className="mid-content">
+                    <button className="mid-container-button" onClick={()=>roadURL(props.url)}>{props.name}</button>
+                </div>
+            )
+        }   
+    }    
     
 }
 

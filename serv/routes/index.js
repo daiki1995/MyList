@@ -3,9 +3,9 @@ var express = require('express');
 
 var router = express.Router();
 
-let loginID;
-let loginPass;
 let loginName;
+let loginPass;
+let acceptName;
 
 router.use(express.json());
 
@@ -33,22 +33,25 @@ conection.connect((err)=>{
 });
 
 
+//メインページ
 router.get('/', function(req, res, next) {
   res.sendfile(process.cwd()+'/serv/views/index.html');
-  console.log("結果" + loginName);
+  console.log("結果" + acceptName);
 });
 
 
+//ログインページ
 router.get('/Login',function(req,res,next){
   res.sendfile(process.cwd()+'/serv/views/login.html');
+  loginName="";
 });
 
 //ログインデータの送信
 router.post('/Login/api',function(req,res,next){
   //ログインデータを受けとってDBとの整合性が取れているかを確認
 
-  loginID=req.body.id;
-  loginPass=req.body.pa
+  loginName=req.body.name;
+  loginPass=req.body.pa;
   
  });
  
@@ -58,21 +61,25 @@ router.get('/Login/api',function(req,res,next){
   //読み込んだ結果を返す
   
   const qLogin = 'SELECT user_name,user_pas FROM user WHERE user_name=? AND user_pas=?'
- 
+  
+  
   conection.connect((err)=>{
-    conection.query(qLogin,[loginID,loginPass],function(err, results, fields){
+    conection.query(qLogin,[loginName,loginPass],function(err, results, fields){
       if (err) throw err;
       
+      console.log(results);
       if (results[0]==undefined){
+        acceptName="";
         console.log("存在しません");
+        res.send({"ck":false});
       }else{
-        loginName=results[0].user_name;
-        //console.log(loginName);
+        acceptName=results[0].user_name;
         res.send({"ck":true});
       }
       
     });
   });
+  
 });
 
 //アカウント作成　ゲット
@@ -95,22 +102,37 @@ router.post('/login/Creat/api',function(req,res,next){
 
 　
   const datetime =Year +'-'+Month+'-'+Day+' '+Hour+':'+Min+':'+Sec;
-  const qAddDate='INSERT INTO user SET ?'
+  const qAddDate='INSERT INTO user SET ?';
+  const qLogin = 'SELECT user_name,user_pas FROM user WHERE user_name=?';
 
   
   conection.connect((err)=>{
 
-    console.log('success');
-    console.log(qAddDate);
-
-    conection.query(qAddDate,{user_id: null,user_name: req.body.id,user_pas: req.body.pa,user_record_date: datetime},function (err, results, fields) {
-      if (err) throw err;
-      console.log(results)
-      conection.end();
-    });
+    conection.query(qLogin,req.body.name,function(err,results,fields){
+      
+      
+      if (results[0]==undefined){
+        console.log("使用可能");
+        conection.query(qAddDate,{user_id: null,user_name: req.body.name,user_pas: req.body.pa,user_record_date: datetime},function (err, results, fields) {
+          if (err) throw err;
+          console.log(results)
+          res.send({'ck':true});
+        });
+        
+      }else{
+        console.log("使用不可");
+        res.send({'ck':false});
+      }
+    })
+    
   });
   
   
+});
+
+//「しょうさい」ページ
+router.get('/detail',function(req,res,next){
+  res.sendfile(process.cwd()+'/serv/views/detail.html');
 });
 
 

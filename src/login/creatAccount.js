@@ -50,9 +50,15 @@ function CreatAccount(){
 
             if(ctrlFetch==1){
 
-                postData(serverCreat,{id:loginId,pa:pass,email:eMail})
-                .then(data => {
-                    console.log(JSON.stringify(data))
+                postData(serverCreat,{name:loginId,pa:pass,email:eMail})
+                .then(function(data){  
+                    console.log(data.ck);
+                    if(data.ck){
+                        window.location.href = '/';
+                    }else{
+                        alert("このログイン名は使用できません")
+                    }
+
                 }).catch(error => console.error(error))
             } 
             setctrFetch(0);

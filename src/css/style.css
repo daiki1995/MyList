@@ -1,16 +1,48 @@
 .header-d{
     display: flex;
     flex-direction: row;
-    color:#000000;
-    background: linear-gradient(90deg,gray,silver);
+    color:#FFFFFF;
+    background-image: url(../image/背景デザイン1.png);
     padding: 20px;
-    text-decoration: underline;
     font-family:cursive;
 }
 
-.submission{
-    text-align: right;
-    flex-direction: row;
+.mid-wrapper{
+    max-width: 100%;
+    min-height: 100vh;
+    margin:0px auto;
+    background-color:rgb(249, 142, 12);
+}
+
+.mid-container{
+    display: flex;
+    min-height: 100vh;
+    width: 75%;
+    margin:0px auto;
+    flex-direction: column;
+    align-items: center;
+    
+
+    background-color:#FFFFFF
+}
+
+.mid-content{
+    margin: 0px;
+}
+
+.mid-container-button{
+    display: flex;
+    padding: 40px;
+    
+    width: 90%;
+    background-color:#FFFFFF;
+
+    align-items: center;
+
+    border: solid;
+    border-color:  rgb(249, 142, 12);
+    color: rgb(249, 142, 12);
+    font-size: 6ex;
 }
 
 .subInput{

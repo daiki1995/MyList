@@ -15,6 +15,8 @@ const creatServ=server + "/creat"
 
 function Login(){
 
+    
+
     function postData(url='',data={}){
         const req={
             method:"POST",
@@ -35,18 +37,17 @@ function Login(){
 
     function UserForm(){
         const [ctrlFetch,setctrFetch]=useState(0);
-        const [loginId,setloginId]=useState();
+        const [loginName,setName]=useState();
         const [pass,setPass]=useState();
-        const [loginCK,setLoginCK]=useState();
-
-
+        
+        
         function loginClick(){
             setctrFetch(1);
             console.log("Click");
         }
 
         function changeId(e){
-            setloginId(e.target.value);
+            setName(e.target.value);
         }
 
         function changePass(e){
@@ -58,7 +59,7 @@ function Login(){
 
             if(ctrlFetch==1){
                 //POST送信
-                postData(ckLogin,{pa:pass,id:loginId})
+                postData(ckLogin,{pa:pass,name:loginName})
                 .then(data => {
                     console.log(JSON.stringify(data))
                 }).catch(error => console.error(error))
@@ -69,10 +70,10 @@ function Login(){
                    
                     if(loginC.ck==true){
                         window.location.href = '/';
+                    }else{
+                        alert("入力されたログインIDは登録されていません。");
                     }
                 });
-                
-               
                 //window.location.href = '/';
             } 
             setctrFetch(0);
@@ -85,9 +86,7 @@ function Login(){
                 <div><input type="Password" placeholder="PassWord" onChange={(e)=>changePass(e)}></input></div>
                 <button onClick={()=>loginClick()}>ログイン</button>
             </div>
-        )
-
-        
+        )        
     }
     
     

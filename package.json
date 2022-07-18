@@ -9,6 +9,7 @@
     "webpack:index": "webpack --config webpack.config.js",
     "webpack:login": "webpack --config webpack.config.login.js",
     "webpack:creatAccount": "webpack --config webpack.config.creatAccount.js",
+    "webpack:detail": "webpack --config webpack.config.detail.js",
     "start": "node ./serv/bin/www"
   },
   "repository": {
