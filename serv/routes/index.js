@@ -135,5 +135,15 @@ router.get('/detail',function(req,res,next){
   res.sendfile(process.cwd()+'/serv/views/detail.html');
 });
 
+//「バトる！」ページ
+router.get('/battle',function(req,res,next){
+  res.sendfile(process.cwd()+'/serv/views/battle.html');
+});
+
+//「ひょうか」ページ
+router.get('/judgement',function(req,res,next){
+  res.sendfile(process.cwd()+'/serv/views/judgement.html');
+});
+
 
 module.exports = router;

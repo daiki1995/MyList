@@ -73,3 +73,8 @@
     margin: auto;
     height: 500px;
 }
+
+.battletable{
+    display: flex;
+    flex-direction: row;
+}

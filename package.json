@@ -10,6 +10,8 @@
     "webpack:login": "webpack --config webpack.config.login.js",
     "webpack:creatAccount": "webpack --config webpack.config.creatAccount.js",
     "webpack:detail": "webpack --config webpack.config.detail.js",
+    "webpack:battle": "webpack --config webpack.config.battle.js",
+    "webpack:judgement": "webpack --config webpack.config.judgement.js",
     "start": "node ./serv/bin/www"
   },
   "repository": {
