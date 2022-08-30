@@ -76,5 +76,10 @@
 
 .battletable{
     display: flex;
+    flex-direction: column;
+}
+
+.judgetable{
+    display: flex;
     flex-direction: row;
 }

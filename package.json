@@ -12,6 +12,7 @@
     "webpack:detail": "webpack --config webpack.config.detail.js",
     "webpack:battle": "webpack --config webpack.config.battle.js",
     "webpack:judgement": "webpack --config webpack.config.judgement.js",
+    "webpack:result": "webpack --config webpack.config.result.js",
     "start": "node ./serv/bin/www"
   },
   "repository": {
@@ -41,8 +42,10 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-modal": "^3.14.3",
+    "react-youtube": "^9.0.3",
     "skeleton": "^0.1.2",
     "style-loader": "^3.2.1",
+    "video-react": "^0.15.0",
     "webpack": "^5.36.2"
   },
   "devDependencies": {
