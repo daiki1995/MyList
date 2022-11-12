@@ -1,9 +1,24 @@
 .header-d{
-    display: flex;
-    flex-direction: row;
     color:#FFFFFF;
     background-image: url(../image/背景デザイン1.png);
     padding: 20px;
+    width:100%;
+    font-family:cursive;
+}
+
+.header-d-battle{
+    color:#FFFFFF;
+    background-image: url(../image/背景デザイン1.png);
+    padding-top: 10px;
+    width:100%;
+    font-family:cursive;
+}
+
+.header-d-judgement{
+    color:#FFFFFF;
+    background-image: url(../image/背景デザイン1.png);
+    padding-top: 10px;
+    width:100%;
     font-family:cursive;
 }
 
@@ -20,29 +35,36 @@
     width: 75%;
     margin:0px auto;
     flex-direction: column;
-    align-items: center;
-    
+    align-items: start;
+    background-color:#FFFFFF;
+}
 
-    background-color:#FFFFFF
+.mid-atag{
+    font-size:30px;
+    color:orange;
+}
+
+.mid-atag-container{
+    display: flex;
+    flex-direction: column;
+}
+
+.mid-atag:hover{
+    color:red;
 }
 
 .mid-content{
     margin: 0px;
 }
 
-.mid-container-button{
-    display: flex;
-    padding: 40px;
-    
-    width: 90%;
-    background-color:#FFFFFF;
+.mid-text{
+    text-align:center;
+    width: 100%;
+}
 
-    align-items: center;
-
-    border: solid;
-    border-color:  rgb(249, 142, 12);
-    color: rgb(249, 142, 12);
-    font-size: 6ex;
+.header-jump{
+    text-align:right;
+    padding-right:2em;
 }
 
 .subInput{
@@ -79,7 +101,36 @@
     flex-direction: column;
 }
 
-.judgetable{
+.battletable-rese-button{
+    width: 50%;
+}
+
+.battlebutton-red{
+    color:red;
+}
+
+.battlebutton-blue{
+    color:blue;
+}
+
+.judgetable-wrap{
+    display: flex;
+    flex-direction: column;
+}
+
+.judgetable-content{
     display: flex;
     flex-direction: row;
+}
+
+.judgetable-word-red{
+    color:red;
+}
+
+.judgetable-word-blue{
+    color:blue;
+}
+
+.F{
+    display:none;
 }

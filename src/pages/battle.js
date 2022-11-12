@@ -15,6 +15,27 @@ const defaultUrl='http://'+location.host
 const battleServer=defaultUrl + "/battle/api"
 
 function Battle(){
+    return(
+        <div>
+            <BattleHeder/>
+            <BattleMid/>
+        </div>
+    )
+}
+
+function BattleHeder(){
+    return(
+        <div className="header-d-battle">
+            <h2>バトる！</h2>
+            <div className="header-jump">
+                <a href={defaultUrl}>メイン画面へ</a>
+            </div>
+            
+        </div>
+    )
+}
+
+function BattleMid(){
 
     const [table,setTable]=useState([]);
     const [already,setAlready]=useState(["","","","",""]);
@@ -50,7 +71,7 @@ function Battle(){
         if(flg){
 
             //POST通信
-            postData(battleServer,{id:table[0],color:table[1],word:table[2]})
+            postData(battleServer,{id:table[0],inst:table[1],word:table[2]})
             .then(data=>{
                 console.log(JSON.stringify(data))
             }).catch(error=>console.error(error));
@@ -69,21 +90,25 @@ function Battle(){
 
     useLayoutEffect(()=>{
         getAwaitFunc();
-        console.log("初回読み込み");
-        console.log(already[0].table_blue_word);
     },[])
     
 
     return(
         <div>
-            <div>TABLE 1</div>
-            <Table tableId='1' setTable={setTable} setFlg={setFlg} already={already}></Table>
-            <div>TABLE 2</div>
-            <Table tableId='2' setTable={setTable} setFlg={setFlg} already={already}></Table>
-            <div>TABLE 3</div>
-            <Table tableId='3' setTable={setTable} setFlg={setFlg} already={already}></Table>
-            <div>TABLE 4</div>
-            <Table tableId='4' setTable={setTable} setFlg={setFlg} already={already}></Table>
+            <div className="mid-wrapper">
+                <div className="mid-container">
+                    <div>TABLE 1</div>
+                    <Table tableId='1' setTable={setTable} setFlg={setFlg} already={already}></Table>
+                    <div>TABLE 2</div>
+                    <Table tableId='2' setTable={setTable} setFlg={setFlg} already={already}></Table>
+                    <div>TABLE 3</div>
+                    <Table tableId='3' setTable={setTable} setFlg={setFlg} already={already}></Table>
+                    <div>TABLE 4</div>
+                    <Table tableId='4' setTable={setTable} setFlg={setFlg} already={already}></Table>
+                    <div>TABLE 5</div>
+                    <Table tableId='5' setTable={setTable} setFlg={setFlg} already={already}></Table>
+                </div>
+            </div>
         </div>
     )
 }
@@ -93,12 +118,11 @@ function Table(props){
     
     const[modalOpen,setOpen]=useState(false);
 
-    const[color,setColor]=useState('');
+    const[inst,setInst]=useState('');
 
     function subBut(){
         
-        
-        switch(color){
+        switch(inst){
             case 'red':
                 console.log(word);
                 props.setTable([props.tableId,'red',word])
@@ -119,37 +143,50 @@ function Table(props){
     }
 
     function cred(){
-        setColor('red')
+        setInst('red')
         setWord("")
         setOpen(true)
     }
 
     function cblue(){
-        setColor('blue')
+        setInst('blue')
         setWord("")
         setOpen(true)
     }
 
+    function cDead(){
+        setInst('deadline')
+        props.setTable([props.tableId,'deadline',''])
+        props.setFlg(true)
+    }
+
     return(
+        
         <div className="battletable">
 
-            <div className="battletable">
+            <div className="battletable-rese-button">
+                <button onClick={()=>cDead()}>締切</button>
+            </div>
+
+            <div>
                 <div>{props.already[props.tableId-1].table_red_word}</div>
-                <button onClick={()=>cred()}>RED</button>
+                <button className='battlebutton-red' onClick={()=>cred()}>赤コーナー</button>
                 <div>{props.already[props.tableId-1].table_blue_word}</div>
-                <button onClick={()=>cblue()}>BLUE</button>
+                    <button className='battlebutton-blue' onClick={()=>cblue()}>青コーナー</button>
             </div>
             
 
-            <Modal isOpen={modalOpen}
+                <Modal isOpen={modalOpen}
                     onRequestClose={()=>setOpen(false)}
-            >
-                <div>ワードを入力</div>
-                <input onChange={(e)=>setWord(e.target.value)}></input>
+                >
+                    <div>ワードを入力</div>
+                    <input onChange={(e)=>setWord(e.target.value)}></input>
 
-                <button onClick={(e)=>subBut(word)}>投稿</button> 
-            </Modal>
+                    <button onClick={(e)=>subBut(word)}>投稿</button> 
+                </Modal>
         </div>
+        
+        
     )
 
 }

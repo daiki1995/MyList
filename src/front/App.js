@@ -1,11 +1,13 @@
+
 import React,{useState,useEffect}  from 'react';
+import Sidebar from 'react-sidebar';
 
 import '../css/style.css';
 import '../css/normalize.css';
 import '../css/skeleton.css';
+import '../css/acordion.css';
 
-
-const detailServ='http://'+location.host
+const defaultServ='http://'+location.host
 
 function App(){
 
@@ -29,28 +31,27 @@ function App(){
         return(
             <div className="mid-wrapper">
                 <div className="mid-container">
-                    <MoveP name='しょうさい' url='/detail'></MoveP>
-                    <MoveP name='バトる！' url='/battle'></MoveP>
-                    <MoveP name='ひょうか' url='/judgement'></MoveP>
+
+                    <div className="mid-atag-container">
+                        <a  className="mid-atag" href={defaultServ+'/battle'}>バトる！</a>
+                        <a  className="mid-atag" href={defaultServ+'/judgement'}>ひょうか</a>
+                    </div>
                     
-                </div>  
+                    <div className="mid-text">
+                        <br/>
+                        <h2 >はじめに！</h2>
+                            <p>
+                                みなさん、誰かにワードマウントを取られたことはありますか？<br/>
+                                しかし、それは正直平場のマウントです。<br/>
+                                ここは、マウント会のトップマウンターが集まるページです。<br/>
+                                ここでは、多くのマウンターがしのぎを削ってマウントを取り合っています。<br/>
+                            </p>
+                    </div>
+                    
+                </div>
             </div>
         )
-
-        function MoveP(props){
-            console.log(props.url);
-            
-            function roadURL(url){
-                console.log(detailServ+url);
-                window.location.href = detailServ+url;
-            }
-
-            return(
-                <div className="mid-content">
-                    <button className="mid-container-button" onClick={()=>roadURL(props.url)}>{props.name}</button>
-                </div>
-            )
-        }   
+        
     }    
     
 }
