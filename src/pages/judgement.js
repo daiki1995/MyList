@@ -83,21 +83,9 @@ function JudgementMid(){
             setVoteFlg(false)
         }
 
-        //締切
-        if(deadflg){
-           //POST通信
-           postData(deadServer,{id:deadId})
-           .then(function(data){
-            setDeadCK(data.dead)
-            console.log(deadCK)
-           }).catch(error=>console.error(error));
-
-           
-           setDeadSetFlg(false) 
-        }
 
         //結果画面に移動
-        if(deadCK){
+        if(deadflg){
            //POST通信
            postData(resultServer,{id:deadId})
            .then(data=>{
@@ -124,6 +112,7 @@ function JudgementMid(){
            
            setReleDflg(false) 
         }
+        console.log(already[0].reception_flg=='F'?'TRUE':'FALSE');
 
     })
 
@@ -182,7 +171,6 @@ function JudgementMid(){
                         setDeadId={setDeadId}
                         setDeadSetFlg={setDeadSetFlg}
                         setReleDflg={setReleDflg}/>
-                
 
                 </div>
             </div>
@@ -199,10 +187,12 @@ function TB(props){
         props.setAnsId(props.id+1)
     }
 
+    
     function deadline(tableid){
         props.setDeadId(tableid+1)
         props.setDeadSetFlg(true)
     }
+    
 
     function releseDeadLine(tableid){
         //console.log(tableid+"解除")
@@ -214,19 +204,33 @@ function TB(props){
     return(
         <div>
             <div>TABLE{props.id+1}</div>
-            <button onClick={()=>deadline(props.id)}>締切</button>
-            <button　className={props.already[props.id].reception_flg} onClick={()=>releseDeadLine(props.id)}>締切を解除する</button>
+            
+            <button　className={props.already[props.id].reception_flg=='F'?'deadline-comment':props.already[props.id].Voting_flg=='T'?'deadline-comment':''} onClick={()=>releseDeadLine(props.id)}>
+                投票完了を解除する
+            </button>
+
+            <button　className={props.already[props.id].Voting_flg=='F'?'deadline-comment':''} onClick={()=>deadline(props.id)}>
+                結果発表
+            </button>
+
             <div　className='judgetable-wrap'>
+                
                 <div className='judgetable-word-red'>赤コーナー</div>
+
                 <div className='judgetable-content'>
                         <div>{props.already[props.id].table_red_word}</div>
-                        <button onClick={()=>voteBut('red')}>投票</button>
+                        <button className={props.already[props.id].reception_flg=='F'?'':'deadline-button'} onClick={()=>voteBut('red')}>
+                            投票
+                        </button>
                 </div>
             
                 <div className='judgetable-word-blue'>青コーナー</div>
+
                 <div className='judgetable-content'>
                         <div>{props.already[props.id].table_blue_word}</div>
-                        <button onClick={()=>voteBut('blue')}>投票</button>
+                        <button className={props.already[props.id].reception_flg=='F'?'':'deadline-button'} onClick={()=>voteBut('blue')}>
+                            投票
+                        </button>
                 </div>
             
             </div>

@@ -131,6 +131,10 @@
     color:blue;
 }
 
-.F{
+.deadline-button{
+    display:none;
+}
+
+.deadline-comment{
     display:none;
 }

@@ -13,6 +13,7 @@ Modal.setAppElement('#battle');
 
 const defaultUrl='http://'+location.host
 const battleServer=defaultUrl + "/battle/api"
+const deadlineServer=defaultUrl+"/battle/deadline"
 
 function Battle(){
     return(
@@ -69,19 +70,27 @@ function BattleMid(){
         //console.log(table);
 
         if(flg){
-
-            //POST通信
-            postData(battleServer,{id:table[0],inst:table[1],word:table[2]})
-            .then(data=>{
+            
+            if(table[1]=='deadline'){
+                //POST通信
+                postData(deadlineServer,{id:table[0]})
+                .then(data=>{
+                    window.location.href = '/battle';
+                }).catch(error=>console.error(error));
+            }else{
+                //POST通信
+                postData(battleServer,{id:table[0],inst:table[1],word:table[2]})
+                .then(data=>{
                 console.log(JSON.stringify(data))
-            }).catch(error=>console.error(error));
+                }).catch(error=>console.error(error));
+            }
+            
 
             //GET通信
             fetch(battleServer).then(response=>response.json())
             .then(function(data){
                 setAlready(data);
             });
-            //console.log(already[0].table_blue_word);
 
             setFlg(false)
         }
@@ -165,7 +174,7 @@ function Table(props){
         <div className="battletable">
 
             <div className="battletable-rese-button">
-                <button onClick={()=>cDead()}>締切</button>
+                <button className={props.already[props.tableId-1].reception_flg=='F'? '':'deadline-button'} onClick={()=>cDead()}>投票開始</button>
             </div>
 
             <div>
