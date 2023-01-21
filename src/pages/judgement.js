@@ -11,9 +11,12 @@ import '../css/skeleton.css';
 const defaultUrl='http://'+location.host
 const voteServer=defaultUrl+'/judgement/vote'
 const deadServer=defaultUrl+'/judgement/deadline'
-const battleServer=defaultUrl + "/battle/api"
+const battleServer=defaultUrl + "/judgement/api"
 const resultServer=defaultUrl + "/result/click"
 const releseDeadServer=defaultUrl+"/judgement/relese"
+
+const themaServer=defaultUrl+'/judgement/thema_get'
+const themaUrl=defaultUrl+'/judgement/thema'
 
 function Judgement(){
     return(
@@ -25,11 +28,28 @@ function Judgement(){
 }
 
 function JudgementHeder(){
+
+    const [thema,setThema]=useState('');
+
+    const getAwaitFunc=async()=>{
+        //GET通信(使用するテーブルを決める)
+        await fetch(themaServer).then(response=>response.json())
+        .then(function(data){
+            console.log('テーマ'+data.thema);
+            setThema(data.thema);
+        });
+    }
+
+    useLayoutEffect(()=>{
+        getAwaitFunc();
+    })
+
     return(
         <div className="header-d-judgement">
             <h2>ひょうか</h2>
+            <div>マウントテーマ：{thema}</div>
             <div className="header-jump">
-                <a href={defaultUrl}>メイン画面へ</a>
+                <a href={themaUrl}>テーマ選択へ</a>
             </div>
         </div>
     )
@@ -43,8 +63,9 @@ function JudgementMid(){
     const [deadflg,setDeadSetFlg]=useState(false)//締切のFLG
     const [ansId,setAnsId]=useState(0)//投票のテーブルID
     const [deadId,setDeadId]=useState(0)//締切のテーブルID
-    const [deadCK,setDeadCK]=useState(false)//締め切ったか否か
+    //const [deadCK,setDeadCK]=useState(false)//締め切ったか否か
     const [releDeadflg,setReleDflg]=useState(false)//締切解除機能
+    const [voteButSw,setvoteButSw]=useState([true,true,true,true,true]);//押したボタンをON-OFFする
 
     function postData(url='',data={}){
         const req={
@@ -125,52 +146,20 @@ function JudgementMid(){
         <div>
             <div className="mid-wrapper">
                 <div className="mid-container">
-                
-                    <TB id={0} 
-                        already={already} 
-                        setVoteColor={setVoteColor} 
-                        setFlg={setVoteFlg} 
-                        setAnsId={setAnsId}
-                        setDeadId={setDeadId}
-                        setDeadSetFlg={setDeadSetFlg}
-                        setReleDflg={setReleDflg}/> 
-                    
-                    <TB id={1} 
-                        already={already} 
-                        setVoteColor={setVoteColor} 
-                        setFlg={setVoteFlg} 
-                        setAnsId={setAnsId}
-                        setDeadId={setDeadId}
-                        setDeadSetFlg={setDeadSetFlg}
-                        setReleDflg={setReleDflg}/>
-
-                    
-                    <TB id={2} 
-                        already={already} 
-                        setVoteColor={setVoteColor} 
-                        setFlg={setVoteFlg} 
-                        setAnsId={setAnsId}
-                        setDeadId={setDeadId}
-                        setDeadSetFlg={setDeadSetFlg}
-                        setReleDflg={setReleDflg}/> 
-                    
-                    <TB id={3} 
-                        already={already} 
-                        setVoteColor={setVoteColor} 
-                        setFlg={setVoteFlg} 
-                        setAnsId={setAnsId}
-                        setDeadId={setDeadId}
-                        setDeadSetFlg={setDeadSetFlg}
-                        setReleDflg={setReleDflg}/>
-                    
-                    <TB id={4} 
-                        already={already} 
-                        setVoteColor={setVoteColor} 
-                        setFlg={setVoteFlg} 
-                        setAnsId={setAnsId}
-                        setDeadId={setDeadId}
-                        setDeadSetFlg={setDeadSetFlg}
-                        setReleDflg={setReleDflg}/>
+            
+                    {[0,1,2,3,4].map((value)=> 
+                        <div key={value}>
+                            <TB id={value}
+                                already={already} 
+                                setVoteColor={setVoteColor} 
+                                setFlg={setVoteFlg} 
+                                setAnsId={setAnsId}
+                                setDeadId={setDeadId}
+                                setDeadSetFlg={setDeadSetFlg}
+                                setReleDflg={setReleDflg}
+                                voteButSw={voteButSw}
+                                setvoteButSw={setvoteButSw}/>
+                        </div>)}
 
                 </div>
             </div>
@@ -185,6 +174,10 @@ function TB(props){
         props.setVoteColor(color)
         props.setFlg(true)
         props.setAnsId(props.id+1)
+        props.setvoteButSw(
+            props.voteButSw.map((sw,index)=>(index==props.id?false:sw))
+        )
+        
     }
 
     
@@ -193,25 +186,26 @@ function TB(props){
         props.setDeadSetFlg(true)
     }
     
-
+/* 投票完了ボタン
     function releseDeadLine(tableid){
         //console.log(tableid+"解除")
         props.setDeadId(tableid+1)
         props.setReleDflg(true)
     }
-
+*/
 
     return(
         <div>
             <div>TABLE{props.id+1}</div>
-            
-            <button　className={props.already[props.id].reception_flg=='F'?'deadline-comment':props.already[props.id].Voting_flg=='T'?'deadline-comment':''} onClick={()=>releseDeadLine(props.id)}>
-                投票完了を解除する
-            </button>
 
             <button　className={props.already[props.id].Voting_flg=='F'?'deadline-comment':''} onClick={()=>deadline(props.id)}>
                 結果発表
             </button>
+
+            <div　className={props.already[props.id].Voting_flg=='F'?props.voteButSw[props.id]==true?'deadline-button':'':'deadline-button'}>
+                投票完了！！！！！！
+            </div>
+
 
             <div　className='judgetable-wrap'>
                 
@@ -219,7 +213,7 @@ function TB(props){
 
                 <div className='judgetable-content'>
                         <div>{props.already[props.id].table_red_word}</div>
-                        <button className={props.already[props.id].reception_flg=='F'?'':'deadline-button'} onClick={()=>voteBut('red')}>
+                        <button className={props.already[props.id].Voting_flg=='F'?props.voteButSw[props.id]==true?'':'deadline-button':'deadline-button'} onClick={()=>voteBut('red')}>
                             投票
                         </button>
                 </div>
@@ -228,7 +222,7 @@ function TB(props){
 
                 <div className='judgetable-content'>
                         <div>{props.already[props.id].table_blue_word}</div>
-                        <button className={props.already[props.id].reception_flg=='F'?'':'deadline-button'} onClick={()=>voteBut('blue')}>
+                        <button className={props.already[props.id].Voting_flg=='F'?props.voteButSw[props.id]==true?'':'deadline-button':'deadline-button'} onClick={()=>voteBut('blue')}>
                             投票
                         </button>
                 </div>

@@ -22,6 +22,14 @@
     font-family:cursive;
 }
 
+.header-d-thema{
+    color:#FFFFFF;
+    background-image: url(../image/背景デザイン1.png);
+    padding-top: 10px;
+    width:100%;
+    font-family:cursive;
+}
+
 .mid-wrapper{
     max-width: 100%;
     min-height: 100vh;
@@ -113,6 +121,14 @@
     color:blue;
 }
 
+.battle-text-red{
+    color:red;
+}
+
+.battle-text-blue{
+    color:blue;
+}
+
 .judgetable-wrap{
     display: flex;
     flex-direction: column;
@@ -131,10 +147,26 @@
     color:blue;
 }
 
+
 .deadline-button{
     display:none;
 }
 
 .deadline-comment{
     display:none;
+}
+
+.a-thema{
+    display: inline-block;
+    width: 100%;
+    font-size: xx-large;
+}
+
+.thema-container{
+    display: flex;
+    width: 1000px;
+}
+
+.sitll-vote{
+    width: 80px;
 }

@@ -12,8 +12,14 @@ import '../css/skeleton.css';
 Modal.setAppElement('#battle');
 
 const defaultUrl='http://'+location.host
-const battleServer=defaultUrl + "/battle/api"
+const battleServer=defaultUrl + "/battle/rend"
+const battleServerRerend=defaultUrl+"/battle/re_rend"
+const battleTableServer=defaultUrl+'/battle/tabel_url'
 const deadlineServer=defaultUrl+"/battle/deadline"
+const battleServerPost=defaultUrl+'/battle/post'
+
+const themaServer=defaultUrl+'/battle/thema_get'
+const themaUrl=defaultUrl+'/battle/thema'
 
 function Battle(){
     return(
@@ -25,11 +31,28 @@ function Battle(){
 }
 
 function BattleHeder(){
+
+    const [thema,setThema]=useState('');
+
+    const getAwaitFunc=async()=>{
+        //GET通信(使用するテーブルを決める)
+        await fetch(themaServer).then(response=>response.json())
+        .then(function(data){
+            console.log('テーマ'+data.thema);
+            setThema(data.thema);
+        });
+    }
+
+    useLayoutEffect(()=>{
+        getAwaitFunc();
+    })
+
     return(
         <div className="header-d-battle">
             <h2>バトる！</h2>
+            <div>マウントテーマ：{thema}</div>
             <div className="header-jump">
-                <a href={defaultUrl}>メイン画面へ</a>
+                <a href={themaUrl}>テーマ選択へ</a>
             </div>
             
         </div>
@@ -41,6 +64,7 @@ function BattleMid(){
     const [table,setTable]=useState([]);
     const [already,setAlready]=useState(["","","","",""]);
     const [flg,setFlg]=useState(false);
+    const [url,setUrl]=useState('');
 
     function postData(url='',data={}){
         const req={
@@ -58,16 +82,23 @@ function BattleMid(){
     }
 
     const getAwaitFunc = async()=>{
+
+        //GET通信(使用するテーブルを決める)
+        await fetch(battleTableServer).then(response=>response.json())
+        .then(function(data){
+            console.log(data.url)
+            setUrl(data.url)
+        });
+
         //GET通信
         await fetch(battleServer).then(response=>response.json())
         .then(function(data){
-            console.log(data);
             setAlready(data);
         });
     }
 
     useEffect(()=>{
-        //console.log(table);
+        console.log(already);
 
         if(flg){
             
@@ -75,28 +106,30 @@ function BattleMid(){
                 //POST通信
                 postData(deadlineServer,{id:table[0]})
                 .then(data=>{
-                    window.location.href = '/battle';
+                    window.location.href = '/battle'+url;
                 }).catch(error=>console.error(error));
             }else{
                 //POST通信
-                postData(battleServer,{id:table[0],inst:table[1],word:table[2]})
+                postData(battleServerPost,{id:table[0],inst:table[1],word:table[2]})
                 .then(data=>{
-                console.log(JSON.stringify(data))
+                    console.log('読み込み');
+                    window.location.href = '/battle'+url;
                 }).catch(error=>console.error(error));
             }
             
 
-            //GET通信
-            fetch(battleServer).then(response=>response.json())
-            .then(function(data){
+            //GET通信　これをPOSTに変更してURLを保つ？
+            postData(battleServerRerend,{url:url}).then(data=>{
+                console.log(data);
                 setAlready(data);
-            });
+            }).catch(error=>console.error(error));
 
             setFlg(false)
         }
 
     });
 
+    
     useLayoutEffect(()=>{
         getAwaitFunc();
     },[])
@@ -106,16 +139,10 @@ function BattleMid(){
         <div>
             <div className="mid-wrapper">
                 <div className="mid-container">
-                    <div>TABLE 1</div>
-                    <Table tableId='1' setTable={setTable} setFlg={setFlg} already={already}></Table>
-                    <div>TABLE 2</div>
-                    <Table tableId='2' setTable={setTable} setFlg={setFlg} already={already}></Table>
-                    <div>TABLE 3</div>
-                    <Table tableId='3' setTable={setTable} setFlg={setFlg} already={already}></Table>
-                    <div>TABLE 4</div>
-                    <Table tableId='4' setTable={setTable} setFlg={setFlg} already={already}></Table>
-                    <div>TABLE 5</div>
-                    <Table tableId='5' setTable={setTable} setFlg={setFlg} already={already}></Table>
+                    {[1,2,3,4,5].map((value)=> <div key={value}>
+                        <div>TABLE{value}</div>
+                        <Table tableId={value} setTable={setTable} setFlg={setFlg} already={already}></Table>
+                    </div>)}
                 </div>
             </div>
         </div>
@@ -134,12 +161,12 @@ function Table(props){
         switch(inst){
             case 'red':
                 console.log(word);
-                props.setTable([props.tableId,'red',word])
+                props.setTable([props.already[props.tableId-1].table_id,'red',word])
                 break
             
             case 'blue':
                 console.log(word);
-                props.setTable([props.tableId,'blue',word])
+                props.setTable([props.already[props.tableId-1].table_id,'blue',word])
                 break
             
             default:
@@ -165,7 +192,7 @@ function Table(props){
 
     function cDead(){
         setInst('deadline')
-        props.setTable([props.tableId,'deadline',''])
+        props.setTable([props.already[props.tableId-1].table_id,'deadline',''])
         props.setFlg(true)
     }
 
@@ -175,13 +202,17 @@ function Table(props){
 
             <div className="battletable-rese-button">
                 <button className={props.already[props.tableId-1].reception_flg=='F'? '':'deadline-button'} onClick={()=>cDead()}>投票開始</button>
+                <div className={props.already[props.tableId-1].reception_flg=='F'? 'deadline-button':'sitll-vote'}>投票中</div>
             </div>
 
             <div>
                 <div>{props.already[props.tableId-1].table_red_word}</div>
-                <button className='battlebutton-red' onClick={()=>cred()}>赤コーナー</button>
+                <button className={props.already[props.tableId-1].reception_flg=='F'? 'battlebutton-red':'deadline-button'} onClick={()=>cred()}>赤コーナー</button>
+                <div className={props.already[props.tableId-1].reception_flg=='F'? 'deadline-button':'battle-text-red'}>赤コーナー</div>
+
                 <div>{props.already[props.tableId-1].table_blue_word}</div>
-                    <button className='battlebutton-blue' onClick={()=>cblue()}>青コーナー</button>
+                <button className={props.already[props.tableId-1].reception_flg=='F'? 'battlebutton-blue':'deadline-button'} onClick={()=>cblue()}>青コーナー</button>
+                <div className={props.already[props.tableId-1].reception_flg=='F'? 'deadline-button':'battle-text-blue'}>青コーナー</div>
             </div>
             
 
@@ -194,7 +225,6 @@ function Table(props){
                     <button onClick={(e)=>subBut(word)}>投稿</button> 
                 </Modal>
         </div>
-        
         
     )
 

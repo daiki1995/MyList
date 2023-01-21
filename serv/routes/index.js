@@ -7,6 +7,7 @@ let loginName;
 let loginPass;
 let acceptName;
 let resultId=0;
+let battleUrl;
 
 router.use(express.json());
 
@@ -92,28 +93,48 @@ router.get('/', function(req, res, next) {
   res.sendfile(process.cwd()+'/serv/views/index.html');
 });
 
-//データリセット用
+//FLGのデータリセット用
 router.get('/clear', function(req, res, next){
 
-  const qGetBattleTable='SELECT table_id FROM battle';
-  const qSetReception = 'UPDATE battle SET reception_flg=?,Voting_flg=? WHERE table_id=?';
+  const qGetBattleTable='SELECT table_id,table_record_data FROM battle';
+  const qSetReception = 'UPDATE battle SET table_record_data=?,reception_flg=?,Voting_flg=? WHERE table_id=?';
   
   conection.query(qGetBattleTable,function(err,results,fields){
     console.log(results)
+    
     results.forEach((elem,index)=>{
       if(!!elem.table_record_data){//!!によってnullをfalseに変換することができる（nullの排除）
         
         //FLGをFへ変える。
-        conection.query(qSetReception,['F','F',index+1],function(err,results,fields){
-          console.log("切り替え");
+        conection.query(qSetReception,[null,'F','F',index+1],function(err,results,fields){
+          console.log("FLGクリア");
         })
       }
     })
+    
   })
   res.sendfile(process.cwd()+'/serv/views/index.html');
 });
 
+//ALLデータリセット用
+router.get('/clear-all', function(req, res, next){
 
+  const qGetBattleTable='SELECT table_id FROM battle';
+  const qSetReception = 'UPDATE battle SET table_red_word=?,table_blue_word=?,table_record_data=?,red_votes=?,blue_votes=?,reception_flg=?,Voting_flg=? WHERE table_id=?';
+  
+  conection.query(qGetBattleTable,function(err,results,fields){
+    console.log(results)
+    results.forEach((elem,index)=>{
+      
+      //FLGをFへ変える。
+      conection.query(qSetReception,[null,null,null,0,0,'F','F',index+1],function(err,results,fields){
+        console.log("オールクリア");
+      })
+      
+    })
+  })
+  res.sendfile(process.cwd()+'/serv/views/index.html');
+});
 
 //ログインページ
 router.get('/Login',function(req,res,next){
@@ -188,166 +209,6 @@ router.post('/login/Creat/api',function(req,res,next){
   });
 });
 
-//「バトる！」ページ
-router.get('/battle',function(req,res,next){
-  //時刻の状態に応じて締切か否かを決定する
-  autoResFlg.chResFlg(autoResFlg.nowDataTime());
-
-  //送信
-  res.sendfile(process.cwd()+'/serv/views/battle.html');
-});
-
-//「バトる！」ページ 「投稿」ボタンクリック
-router.post('/battle/api',function(req,res,next){
-  
-  const qTableSetRed ='UPDATE battle SET table_red_word=? WHERE table_id=?';
-  const qTableSetBlue = 'UPDATE battle SET table_blue_word=? WHERE table_id=?';
-  const qTableDedline ='UPDATE battle SET table_record_data=? WHERE table_id=?';
-  const qTableSetResFlg='UPDATE battle SET reception_flg=? WHERE table_id=?'
-
-  //const datetime = autoResFlg.nowDataTime();
-
-  let qTableSet;
-  let setData;
-
-  switch(req.body.inst){
-    case 'red':
-      qTableSet=qTableSetRed;
-      setData=req.body.word;
-      console.log(qTableSet);
-      break;
-
-    case 'blue':
-      qTableSet=qTableSetBlue;
-      setData=req.body.word;
-      console.log(qTableSet);
-      break;
-    
-    /*
-    case 'deadline':
-      qTableSet=qTableDedline;
-      setData=datetime;
-      conection.query(qTableSetResFlg,['T',req.body.id],function(err,results,fields){
-        if (err) throw err;
-      });
-      break;
-    */
-
-    default:
-      console.log(req.body.inst)
-      console.log("default");
-  }
-
-  conection.query(qTableSet,[setData,req.body.id],function(err,results,fields){
-    if (err) throw err;
-    console.log(results);
-    res.send({'ck':true});
-  });
-  
-});
-
-//「バトる！」のページで投票の締切を行う
-router.post('/battle/deadline',function(req,res,next){
-
-  let setV;
-
-  conection.query('SELECT reception_flg FROM battle WHERE table_id=?',[req.body.id],function(err,results,fields){
-    if (err) throw err;
-    console.log(results);
-    console.log(results[0].reception_flg);
-
-    switch(results[0].reception_flg){
-      case 'T':
-        setV='F';
-        break;
-      
-      case 'F':
-        setV='T';
-        break;
-
-      case null:
-        setV='T';
-        break;
-      
-      default:
-        setV='T';
-    }
-    
-
-    conection.query('UPDATE battle SET table_record_data=?,reception_flg=? WHERE table_id=?',[autoResFlg.nowDataTime(),setV,req.body.id],function(err,results,fields){
-      if (err) throw err;
-
-      if(setV=='T'){
-        res.send({'dead':true});
-      }else{
-        res.send({'dead':false});
-      }
-  
-    });
-
-  });
-
-});
-
-//「バトる!」ページに現在のテーブルの状態を渡す
-router.get('/battle/api',function(req,res,next){
-  conection.query('SELECT * FROM battle',function(err,results,fields){
-    if (err) throw err;
-    console.log(results);
-    res.send(results);
-  });
-});
-
-//「ひょうか」ページ
-router.get('/judgement',function(req,res,next){
-  //時刻の状態に応じて締切か否かを決定する
-  autoResFlg.chResFlg(autoResFlg.nowDataTime());
-
-  res.sendfile(process.cwd()+'/serv/views/judgement.html');
-});
-
-//「ひょうか」のページから投票を行う
-router.post('/judgement/vote',function(req,res,next){
-  const qAddRedVotes ='UPDATE battle SET red_votes=red_votes+1 WHERE table_id=?';
-  const qAddBlueVotes='UPDATE battle SET blue_votes=blue_votes+1 WHERE table_id=?';
-
-  let qTableSet;
-
-  switch(req.body.color){
-    case 'red':
-      qTableSet=qAddRedVotes;
-      console.log(qTableSet);
-      break;
-    
-    case 'blue':
-      qTableSet=qAddBlueVotes;
-      console.log(qTableSet);
-      break;
-    
-    default:
-      console.log("default")
-    }
-
-    console.log(req.body.id);
-
-    conection.query(qTableSet,[req.body.id],function(err,results,fields){
-      if (err) throw err;
-      console.log(results);
-      res.send(results);
-    });
-
-});
-
-
-//「ひょうか」のページで締切を解除する
-router.post('/judgement/relese',function(req,res,next){
-  
-  conection.query('UPDATE battle SET reception_flg=?,table_record_data=? WHERE table_id=?',['F',null,req.body.id],function(err,results,fields){
-    if (err) throw err;
-    console.log("締切解除")
-    res.send({ck:true})
-  })
-});
 
 //「結果」発表画面
 router.get('/result',function(req,res,next){
