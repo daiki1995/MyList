@@ -26,13 +26,14 @@ var conection=mysql.createConnection({
   password:'Popmen0408!'
 });
 
+
 conection.connect((err)=>{
   if(err){
     console.log('error connecting: ' + err.stack);
     return;
   }
-  //console.log('success');
 });
+
 
 //時刻の状態に応じて締切か否かを決定する
 const autoResFlg={
@@ -68,7 +69,7 @@ const autoResFlg={
         if(!!elem.table_record_data){//!!によってnullをfalseに変換することができる（nullの排除）
         
           console.log("オート締切機動")
-          
+          console.log(comparison)
           //時間評価
           if(comparison>1){
 
@@ -82,11 +83,14 @@ const autoResFlg={
       
       })
     });
+
   }
 };
 
 //メインページ
 router.get('/', function(req, res, next) {
+
+  
   //時刻の状態に応じて締切か否かを決定する
   autoResFlg.chResFlg(autoResFlg.nowDataTime());
 
@@ -96,6 +100,7 @@ router.get('/', function(req, res, next) {
 //FLGのデータリセット用
 router.get('/clear', function(req, res, next){
 
+  
   const qGetBattleTable='SELECT table_id,table_record_data FROM battle';
   const qSetReception = 'UPDATE battle SET table_record_data=?,reception_flg=?,Voting_flg=? WHERE table_id=?';
   
@@ -113,7 +118,9 @@ router.get('/clear', function(req, res, next){
     })
     
   })
+
   res.sendfile(process.cwd()+'/serv/views/index.html');
+
 });
 
 //ALLデータリセット用
@@ -133,6 +140,7 @@ router.get('/clear-all', function(req, res, next){
       
     })
   })
+
   res.sendfile(process.cwd()+'/serv/views/index.html');
 });
 
@@ -153,9 +161,7 @@ router.post('/Login/api',function(req,res,next){
 //ログインチェック
 router.get('/Login/api',function(req,res,next){
   //読み込んだ結果を返す
-
   const qLogin = 'SELECT user_name,user_pas FROM user WHERE user_name=? AND user_pas=?'
-  
   
   conection.connect((err)=>{
     conection.query(qLogin,[loginName,loginPass],function(err, results, fields){
@@ -173,6 +179,8 @@ router.get('/Login/api',function(req,res,next){
       
     });
   });
+  
+  
   
 });
 
@@ -241,12 +249,22 @@ router.get('/result/api',function(req,res,next){
   })
 });
 
+//URLをゲットする。
+router.get('/result/getUrl',function(req,res,next){
+  const qResultMovie='SELECT * FROM result_url'
+  let i;
+  conection.query(qResultMovie,function(err,results,fields){
+    console.log(Math.round(Math.random()*results.length)-1);
+    i=Math.round(Math.random()*results.length)-1;
+    res.send(results[i]);
+  })
+})
+
 
 //Jugdからresultへ
 router.post('/result/click',function(req,res,next){
   resultId=req.body.id;
 });
-
 
 
 module.exports = router;

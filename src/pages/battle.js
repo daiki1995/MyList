@@ -12,14 +12,18 @@ import '../css/skeleton.css';
 Modal.setAppElement('#battle');
 
 const defaultUrl='http://'+location.host
+const battleUrl=defaultUrl+'/battle';
+
 const battleServer=defaultUrl + "/battle/rend"
-const battleServerRerend=defaultUrl+"/battle/re_rend"
-const battleTableServer=defaultUrl+'/battle/tabel_url'
+//const battleServerRerend=defaultUrl+"/battle/re_rend"
+//const battleTableServer=defaultUrl+'/battle/tabel_url'
 const deadlineServer=defaultUrl+"/battle/deadline"
 const battleServerPost=defaultUrl+'/battle/post'
 
 const themaServer=defaultUrl+'/battle/thema_get'
 const themaUrl=defaultUrl+'/battle/thema'
+
+let battle=location.href;
 
 function Battle(){
     return(
@@ -33,19 +37,39 @@ function Battle(){
 function BattleHeder(){
 
     const [thema,setThema]=useState('');
+    const [url,setUrl]=useState('');
+
+    function postData(url='',data={}){
+        const req={
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json;charset=utf-8",
+                
+            },
+            body:JSON.stringify(data),
+        }
+        
+        //console.log(data);
+    
+        return fetch(url,req).then(response => response.json());
+    }
+    
 
     const getAwaitFunc=async()=>{
+
+        setUrl(battle.substring(battle.indexOf('battle')+('battle').length));
+
         //GET通信(使用するテーブルを決める)
-        await fetch(themaServer).then(response=>response.json())
+        await postData(themaServer,{url:battle.substring(battle.indexOf('battle')+('battle').length)})
         .then(function(data){
-            console.log('テーマ'+data.thema);
+            //console.log('テーマ'+data.thema);
             setThema(data.thema);
         });
     }
 
     useLayoutEffect(()=>{
         getAwaitFunc();
-    })
+    },[]);
 
     return(
         <div className="header-d-battle">
@@ -76,29 +100,32 @@ function BattleMid(){
             body:JSON.stringify(data),
         }
         
-        console.log(data);
+        //console.log(data);
     
         return fetch(url,req).then(response => response.json());
     }
 
     const getAwaitFunc = async()=>{
-
+        console.log('貴様！見ているな！！！！！！')
         //GET通信(使用するテーブルを決める)
+        /*
         await fetch(battleTableServer).then(response=>response.json())
         .then(function(data){
             console.log(data.url)
             setUrl(data.url)
-        });
+        });*/
+
+        setUrl(battle.substring(battle.indexOf('battle')+('battle').length));//URLの最後の部分を取得してテーブルを決める
 
         //GET通信
-        await fetch(battleServer).then(response=>response.json())
+        await postData(battleServer,{url:battle.substring(battle.indexOf('battle')+('battle').length)})
         .then(function(data){
             setAlready(data);
         });
     }
 
     useEffect(()=>{
-        console.log(already);
+        //console.log(already);
 
         if(flg){
             
@@ -112,18 +139,18 @@ function BattleMid(){
                 //POST通信
                 postData(battleServerPost,{id:table[0],inst:table[1],word:table[2]})
                 .then(data=>{
-                    console.log('読み込み');
+                    //console.log('読み込み');
                     window.location.href = '/battle'+url;
                 }).catch(error=>console.error(error));
             }
             
-
+            /*
             //GET通信　これをPOSTに変更してURLを保つ？
             postData(battleServerRerend,{url:url}).then(data=>{
                 console.log(data);
                 setAlready(data);
             }).catch(error=>console.error(error));
-
+            */
             setFlg(false)
         }
 
@@ -156,21 +183,37 @@ function Table(props){
 
     const[inst,setInst]=useState('');
 
+    const[deadlineCss,setDeadCss]=useState('');
+
+    useEffect(()=>{
+        //console.log('テーブル読み込み')
+        //console.log(props.already[props.tableId-1].reception_flg);
+        
+        if(props.already[props.tableId-1].table_blue_word==null || props.already[props.tableId-1].table_red_word==null || props.already[props.tableId-1].reception_flg=='T'){
+            //console.log('条件に合わない')
+            setDeadCss('deadline-button')
+        }else{
+            setDeadCss('');
+        }
+        
+        //console.log((props.tableId)+deadlineCss);
+    });
+
     function subBut(){
         
         switch(inst){
             case 'red':
-                console.log(word);
+                //console.log(word);
                 props.setTable([props.already[props.tableId-1].table_id,'red',word])
                 break
             
             case 'blue':
-                console.log(word);
+                //console.log(word);
                 props.setTable([props.already[props.tableId-1].table_id,'blue',word])
                 break
             
             default:
-                console.log("default")
+                //console.log("default")
         }
 
         props.setFlg(true)
@@ -194,6 +237,9 @@ function Table(props){
         setInst('deadline')
         props.setTable([props.already[props.tableId-1].table_id,'deadline',''])
         props.setFlg(true)
+        
+        //console.log(props.already);
+        //console.log(props.already[props.tableId-1].reception_flg=='F'? props.already[props.tableId-1].table_blue_word==null? props.already[props.tableId-1].table_red_word==null? 'どっちも空欄でF':'赤は空欄じゃない':'青は空欄じゃない':'どっちも空欄じゃない');
     }
 
     return(
@@ -201,7 +247,7 @@ function Table(props){
         <div className="battletable">
 
             <div className="battletable-rese-button">
-                <button className={props.already[props.tableId-1].reception_flg=='F'? '':'deadline-button'} onClick={()=>cDead()}>投票開始</button>
+                <button className={deadlineCss} onClick={()=>cDead()}>投票開始</button>
                 <div className={props.already[props.tableId-1].reception_flg=='F'? 'deadline-button':'sitll-vote'}>投票中</div>
             </div>
 

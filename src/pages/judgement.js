@@ -11,12 +11,14 @@ import '../css/skeleton.css';
 const defaultUrl='http://'+location.host
 const voteServer=defaultUrl+'/judgement/vote'
 const deadServer=defaultUrl+'/judgement/deadline'
-const battleServer=defaultUrl + "/judgement/api"
+const battleServer=defaultUrl + "/judgement/rend"
 const resultServer=defaultUrl + "/result/click"
 const releseDeadServer=defaultUrl+"/judgement/relese"
 
 const themaServer=defaultUrl+'/judgement/thema_get'
 const themaUrl=defaultUrl+'/judgement/thema'
+
+let judgement=location.href;
 
 function Judgement(){
     return(
@@ -30,10 +32,31 @@ function Judgement(){
 function JudgementHeder(){
 
     const [thema,setThema]=useState('');
+    const [url,setUrl]=useState('')
+
+    function postData(url='',data={}){
+        const req={
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json;charset=utf-8",
+                
+            },
+            body:JSON.stringify(data),
+        }
+        
+        console.log(data);
+    
+        return fetch(url,req).then(response => response.json());
+    }
 
     const getAwaitFunc=async()=>{
-        //GET通信(使用するテーブルを決める)
-        await fetch(themaServer).then(response=>response.json())
+
+
+        setUrl(judgement.substring(judgement.indexOf('judgement')+('judgement').length))
+        console.log(judgement.substring(judgement.indexOf('judgement')+('judgement').length))
+
+        //POST通信(使用するテーブルを決める)
+        await postData(themaServer,{url:judgement.substring(judgement.indexOf('judgement')+('judgement').length)})
         .then(function(data){
             console.log('テーマ'+data.thema);
             setThema(data.thema);
@@ -63,6 +86,7 @@ function JudgementMid(){
     const [deadflg,setDeadSetFlg]=useState(false)//締切のFLG
     const [ansId,setAnsId]=useState(0)//投票のテーブルID
     const [deadId,setDeadId]=useState(0)//締切のテーブルID
+    const [url,setUrl]=useState('')//URL
     //const [deadCK,setDeadCK]=useState(false)//締め切ったか否か
     const [releDeadflg,setReleDflg]=useState(false)//締切解除機能
     const [voteButSw,setvoteButSw]=useState([true,true,true,true,true]);//押したボタンをON-OFFする
@@ -84,8 +108,9 @@ function JudgementMid(){
 
     const getAwaitFunc = async() =>{
 
+        setUrl(judgement.substring(judgement.indexOf('judgement')+('judgement').length))
         //GET通信
-        await fetch(battleServer).then(response=>response.json())
+        await postData(battleServer,{url:judgement.substring(judgement.indexOf('judgement')+('judgement').length)})
         .then(function(data){
             console.log(data);
             setAlready(data)

@@ -1,6 +1,6 @@
 .header-d{
     color:#FFFFFF;
-    background-image: url(../image/背景デザイン1.png);
+    background-image: url(../image/backgroundView.png);
     padding: 20px;
     width:100%;
     font-family:cursive;
@@ -8,7 +8,7 @@
 
 .header-d-battle{
     color:#FFFFFF;
-    background-image: url(../image/背景デザイン1.png);
+    background-image: url(../image/backgroundView.png);
     padding-top: 10px;
     width:100%;
     font-family:cursive;
@@ -16,7 +16,7 @@
 
 .header-d-judgement{
     color:#FFFFFF;
-    background-image: url(../image/背景デザイン1.png);
+    background-image: url(../image/backgroundView.png);
     padding-top: 10px;
     width:100%;
     font-family:cursive;
@@ -24,7 +24,7 @@
 
 .header-d-thema{
     color:#FFFFFF;
-    background-image: url(../image/背景デザイン1.png);
+    background-image: url(../image/backgroundView.png);
     padding-top: 10px;
     width:100%;
     font-family:cursive;
