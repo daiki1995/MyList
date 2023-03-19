@@ -3,14 +3,14 @@ module.exports = {
     mode: "development",
 
     // メインとなるJavaScriptファイル（エントリーポイント）
-    entry: `./src/pages/detail.js`,
+    entry: `./src/pages/result.js`,
   
     // ファイルの出力設定
     output: {
       //  出力ファイルのディレクトリ名
       path: `${__dirname}/serv/public/javascripts`,
       // 出力ファイル名
-      filename: "deitail.js"
+      filename: "result.js"
     },
 
     
@@ -38,8 +38,6 @@ module.exports = {
             }
         ]
     }
-
-    
 
   };
 
